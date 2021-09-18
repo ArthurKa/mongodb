@@ -1,3 +1,15 @@
+## tsconfig.json
+```json
+{
+  "include": [
+    "node_modules/@arthurka/mongodb/build/modules.d.ts",
+  ],
+  "exclude": [
+    // no "node_modules",
+  ],
+}
+```
+
 ## .env
 ```
 MONGO_URL = mongodb://localhost:27017/<DB_NAME>
