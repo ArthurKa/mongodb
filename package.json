@@ -20,5 +20,17 @@
     "@arthurka/eslint": "^1.30.0",
     "@types/node": "^16.9.2",
     "typescript": "^4.4.3"
-  }
+  },
+  "author": {
+    "name": "ArthurKa",
+    "email": "arthur.katruk@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArthurKa/mongodb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArthurKa/mongodb/issues"
+  },
+  "homepage": "https://github.com/ArthurKa/mongodb#readme"
 }
