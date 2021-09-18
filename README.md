@@ -1,5 +1,5 @@
 ## tsconfig.json
-```json
+```ts
 {
   "include": [
     "node_modules/@arthurka/mongodb/build/modules.d.ts",
