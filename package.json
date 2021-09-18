@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "description": "",
   "scripts": {
     "build:clean": "rm -rf build/*",
     "ts-compile": "tsc --declaration",
