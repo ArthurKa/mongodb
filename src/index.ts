@@ -1,4 +1,7 @@
-import { MongoClient, Db, Collection, Document, OptionalId } from 'mongodb';
+import MongoDB, { MongoClient, Db, Collection, Document, OptionalId } from 'mongodb';
+
+export default MongoDB;
+export * from 'mongodb';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const dbName = process.env.DB_NAME || process.env.MONGO_URL.split('/').pop()!;
