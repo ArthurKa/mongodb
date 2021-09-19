@@ -24,10 +24,10 @@ DB_NAME = <DB_NAME>
 ## Usage
 
 ```ts
-import { getCollection, closeDB } from '<pkg.name>';
+import { getDBCollection, closeDB } from '<pkg.name>';
 
 (async () => {
-  const collection = await getCollection('collection');
+  const collection = await getDBCollection('collection');
 
   await closeDB();
 })();
@@ -35,7 +35,7 @@ import { getCollection, closeDB } from '<pkg.name>';
 
 ### Or
 ```ts
-import { getCollection, closeDB } from '<pkg.name>';
+import { getDBCollection, closeDB } from '<pkg.name>';
 
 interface Document {
   name: string;
@@ -43,7 +43,7 @@ interface Document {
 }
 
 (async () => {
-  const collection = await getCollection<Document>('collection');
+  const collection = await getDBCollection<Document>('collection');
 
   await closeDB();
 })();
