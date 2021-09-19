@@ -2,7 +2,7 @@ import { MongoClient, Db, Collection, Document, OptionalId } from 'mongodb';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const dbName = process.env.DB_NAME || process.env.MONGO_URL.split('/').pop()!;
-let data: {
+let dbData: {
   client: MongoClient;
   db: Db;
 } | null = null;
@@ -16,9 +16,9 @@ async function throwIfNoCollection(db: Db, collectionName: string) {
 }
 
 export async function getDBCollection<T extends Document = Document>(collectionName: string, createCollection?: true) {
-  if(!data) {
+  if(!dbData) {
     const client = await MongoClient.connect(process.env.MONGO_URL);
-    data = {
+    dbData = {
       client,
       db: client.db(dbName),
     };
@@ -27,9 +27,9 @@ export async function getDBCollection<T extends Document = Document>(collectionN
   let collection: Collection<T> | undefined = collections[collectionName];
   if(!collection) {
     if(!createCollection) {
-      await throwIfNoCollection(data.db, collectionName);
+      await throwIfNoCollection(dbData.db, collectionName);
     }
-    collection = collections[collectionName] = data.db.collection<T>(collectionName);
+    collection = collections[collectionName] = dbData.db.collection<T>(collectionName);
   }
 
   if(createCollection) {
@@ -40,7 +40,7 @@ export async function getDBCollection<T extends Document = Document>(collectionN
 }
 
 export const closeDB = () => {
-  const result = data?.client.close();
-  data = null;
+  const result = dbData?.client.close();
+  dbData = null;
   return result;
 };
