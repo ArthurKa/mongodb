@@ -8,12 +8,12 @@ const dbName = process.env.DB_NAME || process.env.MONGO_URL.split('/').pop()!;
 let dbData: {
   client: MongoClient;
   db: Db;
+  collections: Record<string, Collection<any>>;
 } | null = null;
-const collections: Record<string, Collection<any>> = {};
 
 async function throwIfNoCollection(db: Db, collectionName: string) {
-  const collections = await db.listCollections().toArray().then(e => e.map(e => e.name));
-  if(!collections.includes(collectionName)) {
+  const collectionsFromDB = await db.listCollections().toArray().then(e => e.map(e => e.name));
+  if(!collectionsFromDB.includes(collectionName)) {
     throw new Error(`There is no such collection as "${collectionName}" in ${dbName}`);
   }
 }
@@ -24,21 +24,23 @@ export async function getDBCollection<T extends Document = Document>(collectionN
     dbData = {
       client,
       db: client.db(dbName),
+      collections: {},
     };
   }
 
-  let collection: Collection<T> | undefined = collections[collectionName];
+  let collection: Collection<T> | undefined = dbData.collections[collectionName];
   if(!collection) {
     if(!createCollection) {
       await throwIfNoCollection(dbData.db, collectionName);
     }
-    collection = collections[collectionName] = dbData.db.collection<T>(collectionName);
+    collection = dbData.collections[collectionName] = dbData.db.collection<T>(collectionName);
+
+    if(createCollection && await collection.countDocuments() === 0) {
+      await collection.insertOne({} as OptionalId<T>);
+      await collection.deleteMany({});
+    }
   }
 
-  if(createCollection) {
-    await collection.insertOne({} as OptionalId<T>);
-    await collection.deleteMany({});
-  }
   return collection;
 }
 
