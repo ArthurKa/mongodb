@@ -18,7 +18,7 @@ async function throwIfNoCollection(db: Db, collectionName: string) {
   }
 }
 
-export async function getDBCollection<T extends Document = Document>(collectionName: string, createCollection?: true) {
+export async function getDBCollection<T extends Document = Document>(collectionName: string, createCollection?: boolean) {
   if(!dbData) {
     const client = await MongoClient.connect(process.env.MONGO_URL);
     dbData = {
