@@ -10,7 +10,8 @@
     "build": "npm run build:clean && npm run ts-compile && npm run my-compile",
     "publish:prepare": "mkdir -p ./build/build; cp ./src/modules.d.ts ./build; mv ./build/* ./build/build; cp ./package* README.md ./build",
     "pu": "npm pu ./build",
-    "my-publish": "npm run publish:prepare && npm run pu"
+    "my-publish": "npm run publish:prepare && npm run pu",
+    "automate-deploy-copy-to-shell": "g bcp && npm run build && mkdir -p ./build/build; cp ./src/modules.d.ts ./build; mv ./build/* ./build/build; cp ./package* README.md ./build; npm run pu && g p && g pt"
   },
   "license": "ISC",
   "dependencies": {
