@@ -75,8 +75,7 @@ export async function getDBCollection<T extends Document = Document>(collectionN
   return collection;
 }
 
-export const closeDB = () => {
-  const result = dbData?.client.close();
+export const closeDB = async () => {
+  await dbData?.client.close();
   dbData = null;
-  return result;
 };
