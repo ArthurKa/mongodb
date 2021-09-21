@@ -1,4 +1,12 @@
-import MongoDB, { MongoClient, Db, Collection, Document, OptionalId } from 'mongodb';
+import MongoDB, {
+  MongoClient,
+  Db,
+  Collection,
+  Document,
+  OptionalId,
+  InsertManyResult,
+  BulkWriteOptions,
+} from 'mongodb';
 
 export default MongoDB;
 export * from 'mongodb';
@@ -18,6 +26,11 @@ async function throwIfNoCollection(db: Db, collectionName: string) {
   }
 }
 
+interface ExtendedCollection<T> extends Collection<T> {
+  insertManyWithEmptyArrayCheck(docs: OptionalId<T>[]): Promise<InsertManyResult<T>>;
+  insertManyWithEmptyArrayCheck(docs: OptionalId<T>[], options: BulkWriteOptions): Promise<InsertManyResult<T>>;
+}
+
 export async function getDBCollection<T extends Document = Document>(collectionName: string, createCollection?: boolean) {
   if(!dbData) {
     const client = await MongoClient.connect(process.env.MONGO_URL);
@@ -28,12 +41,30 @@ export async function getDBCollection<T extends Document = Document>(collectionN
     };
   }
 
-  let collection: Collection<T> | undefined = dbData.collections[collectionName];
+
+  let collection = dbData.collections[collectionName] as ExtendedCollection<T> | undefined;
   if(!collection) {
     if(!createCollection) {
       await throwIfNoCollection(dbData.db, collectionName);
     }
-    collection = dbData.collections[collectionName] = dbData.db.collection<T>(collectionName);
+    const newCollection = dbData.db.collection<T>(collectionName);
+    dbData.collections[collectionName] = newCollection;
+    collection = newCollection as ExtendedCollection<T>;
+
+    // @ts-expect-error
+    collection.insertManyWithEmptyArrayCheck = function(docs, ...restParams) {
+      if(!docs.length) {
+        const result: InsertManyResult<T> = {
+          acknowledged: true,
+          insertedCount: 0,
+          insertedIds: {},
+        };
+        return Promise.resolve(result);
+      }
+
+      // @ts-expect-error
+      return this.insertMany(docs, ...restParams);
+    };
 
     if(createCollection && await collection.countDocuments() === 0) {
       await collection.insertOne({} as OptionalId<T>);
