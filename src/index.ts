@@ -26,7 +26,7 @@ async function throwIfNoCollection(db: Db, collectionName: string) {
   }
 }
 
-interface ExtendedCollection<T> extends Collection<T> {
+export interface ExtendedCollection<T> extends Collection<T> {
   insertManyWithEmptyArrayCheck(docs: OptionalId<T>[]): Promise<InsertManyResult<T>>;
   insertManyWithEmptyArrayCheck(docs: OptionalId<T>[], options: BulkWriteOptions): Promise<InsertManyResult<T>>;
 }
